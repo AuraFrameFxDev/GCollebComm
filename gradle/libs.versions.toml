@@ -70,13 +70,13 @@ retrofit-adapter-rxjava2 = { group = "com.squareup.retrofit2", name = "adapter-r
 okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
-firebase-analytics-ktx = { group = "com.google.firebase", name = "firebase-analytics-ktx", version = "22.4.0" }
-firebase-crashlytics-ktx = { group = "com.google.firebase", name = "firebase-crashlytics-ktx", version = "19.4.3" }
-firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version = "23.2.1" }
-firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version = "25.14" }
-firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version = "24.1.1" }
-firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version = "21.02" }
-firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx", version = "21.0.0" }
+firebase-analytics-ktx = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
+firebase-crashlytics-ktx = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx" }
+firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx" }
+firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
+firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx" }
+firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services-auth" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "play-services-maps" }
@@ -115,8 +115,8 @@ paging-runtime-ktx = { group = "androidx.paging", name = "paging-runtime-ktx", v
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3" }
-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version = "21.0.0" }
-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version = "19.4.3" }
+compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle-viewmodel-compose" }
 

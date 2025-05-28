@@ -10,9 +10,12 @@ import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -175,13 +178,42 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         val filter = IntentFilter(GenesisAIService.PROACTIVE_MESSAGE_ACTION)
-        registerReceiver(messageReceiver, filter)
+        try {
+            if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
+                // For Android 13 (API 33) and above, use the new registerReceiver method with RECEIVER_EXPORTED
+                val flags = if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    Context.RECEIVER_EXPORTED
+                } else {
+                    @Suppress("DEPRECATION")
+                    Context.RECEIVER_EXPORTED
+                }
+                this.registerReceiver(messageReceiver, filter, flags)
+            } else {
+                // For older versions, use the legacy method
+                @Suppress("DEPRECATION")
+                this.registerReceiver(messageReceiver, filter)
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error registering receiver: ${e.message}")
+            e.printStackTrace()
+            // Fallback to legacy method if the new one fails
+            try {
+                @Suppress("DEPRECATION")
+                this.registerReceiver(messageReceiver, filter)
+            } catch (e2: Exception) {
+                Log.e("MainActivity", "Fallback receiver registration failed: ${e2.message}")
+                e2.printStackTrace()
+            }
+        }
     }
-
+    
     override fun onStop() {
         super.onStop()
         try {
             unregisterReceiver(messageReceiver)
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error unregistering receiver: ${e.message}")
+            // Ignore exception if receiver wasn't registered
         } catch (e: IllegalArgumentException) {
             // Receiver was not registered
             // This can happen if the activity is stopped before it's fully started
