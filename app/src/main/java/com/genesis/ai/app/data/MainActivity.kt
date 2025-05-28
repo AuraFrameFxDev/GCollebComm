@@ -10,9 +10,12 @@ import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -20,6 +23,23 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.genesis.ai.app.R
+import com.genesis.ai.app.data.model.GenesisRepositoryNew
+import com.genesis.ai.app.data.model.ImportResponse
+import com.genesis.ai.app.data.model.MessageRequest
+import com.genesis.ai.app.data.model.MessageResponse
+import com.genesis.ai.app.service.GenesisAIService
+import com.google.android.material.switchmaterial.SwitchMaterial
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import com.genesis.ai.app.R
 import com.genesis.ai.app.data.model.GenesisRepositoryNew
 import com.genesis.ai.app.data.model.ImportResponse
@@ -175,7 +195,43 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         val filter = IntentFilter(GenesisAIService.PROACTIVE_MESSAGE_ACTION)
-        registerReceiver(messageReceiver, filter)
+        try {
+            if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
+                // For Android 13 (API 33) and above, use the new registerReceiver method with RECEIVER_EXPORTED
+                val flags = if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    Context.RECEIVER_EXPORTED
+                } else {
+                    @Suppress("DEPRECATION")
+                    Context.RECEIVER_EXPORTED
+                }
+                this.registerReceiver(messageReceiver, filter, flags)
+            } else {
+                // For older versions, use the legacy method
+                @Suppress("DEPRECATION")
+                this.registerReceiver(messageReceiver, filter)
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error registering receiver: ${e.message}")
+            e.printStackTrace()
+            // Fallback to legacy method if the new one fails
+            try {
+                @Suppress("DEPRECATION")
+                this.registerReceiver(messageReceiver, filter)
+            } catch (e2: Exception) {
+                Log.e("MainActivity", "Fallback receiver registration failed: ${e2.message}")
+                e2.printStackTrace()
+            }
+        }
+    }
+    
+    override fun onStop() {
+        super.onStop()
+        try {
+            unregisterReceiver(messageReceiver)
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error unregistering receiver: ${e.message}")
+            // Ignore exception if receiver wasn't registered
+        }
     }
 
     override fun onStop() {
