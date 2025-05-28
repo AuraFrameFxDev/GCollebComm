@@ -1,34 +1,27 @@
-// Gencommone.zip/GenComm1/app/build.gradle.kts
-
 plugins {
-    // Android and Kotlin core plugins must be applied directly to the app module
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.kotlinAndroid)
 
-    // KSP (Kotlin Symbol Processing) plugin
-    id("com.google.devtools.ksp")
-    
-    // Kotlin plugins
-    id("org.jetbrains.kotlin.plugin.serialization")
+    alias(libs.plugins.ksp)
+
+    alias(libs.plugins.kotlinSerialization)
     id("kotlin-parcelize")
-    
-    // Google Services and Firebase core plugins
-    id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics")
-    
-    // Navigation Safe Args
-    id("androidx.navigation.safeargs.kotlin")
-    
-    // Secrets Gradle Plugin
-    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+
+    alias(libs.plugins.composeCompiler)
+
+    alias(libs.plugins.googleServices)
+    alias(libs.plugins.firebaseCrashlytics)
+
+    alias(libs.plugins.navigationSafeargsKotlin)
+
+    alias(libs.plugins.secretsGradlePlugin)
+
+    alias(libs.plugins.hiltAndroid)
 }
 
 android {
     namespace = "com.genesis.ai.app"
     compileSdk = 35
-
-    // Match working APK build versions
-    buildToolsVersion = "34.0.0"
 
     defaultConfig {
         applicationId = "com.genesis.ai.app"
@@ -39,10 +32,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testApplicationId = "com.genesis.ai.app.test"
 
-        // Enable vector drawables
         vectorDrawables.useSupportLibrary = true
 
-        // Enable multidex
         multiDexEnabled = true
     }
 
@@ -50,13 +41,19 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
             isDebuggable = true
         }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -74,7 +71,7 @@ android {
         )
     }
 
-    packagingOptions {
+    packaging {
         jniLibs {
             useLegacyPackaging = true
         }
@@ -105,7 +102,6 @@ android {
         compose = true
     }
 
-    // Configure KSP
     ksp {
         arg("room.schemaLocation", "$projectDir/schemas")
         arg("room.incremental", "true")
@@ -115,120 +111,87 @@ android {
 
     configurations.all {
         resolutionStrategy {
-            // Force specific versions if needed
-            // force("androidx.core:core-ktx:1.16.0")
-            // force("androidx.appcompat:appcompat:1.7.0")
-
-            // Enable dependency verification (optional)
-            // failOnVersionConflict()
         }
     }
 }
 
 dependencies {
-    // Kotlin
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
-    
-    // Retrofit & Networking
-    val retrofitVersion = "2.9.0"
-    val okhttpVersion = "4.12.0"
-    
-    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
-    implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
-    implementation("com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion")
-    implementation("com.squareup.okhttp3:okhttp:$okhttpVersion")
-    implementation("com.squareup.okhttp3:logging-interceptor:$okhttpVersion")
-    implementation("com.squareup.okio:okio:3.6.0")
-    
-    // Gson for JSON parsing
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.play.services)
 
-    // Firebase BOM (Bill of Materials) - Single BOM import for all Firebase dependencies
-    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.retrofit.adapter.rxjava2)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
+    implementation(libs.okio)
 
-    // Firebase dependencies (using BOM)
-    implementation("com.google.firebase:firebase-analytics-ktx")
-    implementation("com.google.firebase:firebase-crashlytics-ktx")
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-firestore-ktx")
-    implementation("com.google.firebase:firebase-messaging-ktx")
-    implementation("com.google.firebase:firebase-storage-ktx")
-    implementation("com.google.firebase:firebase-database-ktx")
+    implementation(libs.gson)
 
-    // Google Play Services
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
-    implementation("com.google.android.gms:play-services-location:21.0.1")
-    implementation("com.google.android.gms:play-services-maps:18.2.0")
-    implementation("com.google.android.gms:play-services-drive:17.0.0")
+    implementation(platform(libs.firebase.bom))
 
-    // Navigation
-    val navVersion = "2.7.5"
-    implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
-    implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
-    implementation("androidx.navigation:navigation-dynamic-features-fragment:$navVersion")
-
-    // Core AndroidX
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.10.0")
-
-    // AndroidX UI
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
-    implementation("androidx.cardview:cardview:1.0.0")
-    implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.multidex:multidex:2.0.1")
-
-    // Lifecycle components
-    val lifecycleVersion = "2.6.2"
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-process:$lifecycleVersion")
-
-    // Desugaring for Java 8+ APIs
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
-
-    // Testing
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-
-    // WorkManager
-    implementation("androidx.work:work-runtime-ktx:2.8.1")
+    implementation(libs.firebase.analytics.ktx)
+    implementation(libs.firebase.crashlytics.ktx)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.messaging.ktx)
+    debugImplementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.database.ktx)
 
 
-    // Glide for image loading
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    ksp("com.github.bumptech.glide:ksp:4.16.0")
+    implementation(libs.play.services.auth)
+    implementation(libs.play.services.location)
+    implementation(libs.play.services.maps)
+    implementation(libs.play.services.drive)
 
-    // Timber for logging
-    implementation("com.jakewharton.timber:timber:5.0.1")
-    
-    // Hilt for dependency injection
-    val hiltVersion = "2.48.1"
-    implementation("com.google.dagger:hilt-android:$hiltVersion")
-    ksp("com.google.dagger:hilt-android-compiler:$hiltVersion")
-    
-    // Room components
-    val roomVersion = "2.6.0"
-    implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
-    
-    // Paging 3
-    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
-    
-    // Compose
-    val composeBom = platform("androidx.compose:compose-bom:2023.10.1")
-    implementation(composeBom)
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    implementation("androidx.activity:activity-compose:1.8.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation(libs.navigation.fragment.ktx)
+    implementation(libs.navigation.ui.ktx)
+    implementation(libs.navigation.dynamic.features.fragment)
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.cardview)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.multidex)
+
+    implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.lifecycle.livedata.ktx)
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.common.java8)
+    implementation(libs.lifecycle.process)
+
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
+
+    implementation(libs.work.runtime.ktx)
+
+    implementation(libs.glide)
+    ksp(libs.glide.ksp)
+
+    implementation(libs.timber)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
+    implementation(libs.paging.runtime.ktx)
+
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.ui)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.ui.tooling.preview)
+    debugImplementation(libs.compose.ui.tooling)
+    implementation(libs.activity.compose)
+    implementation(libs.lifecycle.viewmodel.compose)
 }
