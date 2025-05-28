@@ -8,9 +8,12 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
+import android.text.TextUtils.TruncateAt
 import android.view.View
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,8 +23,13 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.genesis.ai.app.R
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -334,10 +342,16 @@ class FileAdapter(
     private var selectedFile: File? = null
 
     class FileViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val fileName: TextView = view.findViewById(R.id.tvFileName)
-        val fileInfo: TextView = view.findViewById(R.id.tvFileInfo)
-        val fileIcon: View = view.findViewById(R.id.ivFileIcon)
-        val checkBox: View = view.findViewById(R.id.cbSelect)
+        val fileName: TextView = view.findViewById<TextView>(R.id.tvFileName).apply {
+            isSingleLine = true
+            ellipsize = TruncateAt.END
+        }
+        val fileInfo: TextView = view.findViewById<TextView>(R.id.tvFileInfo).apply {
+            isSingleLine = true
+            ellipsize = TruncateAt.END
+        }
+        val fileIcon: ImageView = view.findViewById(R.id.ivFileIcon)
+        val checkBox: CheckBox = view.findViewById(R.id.cbSelect)
     }
 
     private val fileComparator = compareBy<File> { !it.isDirectory }.thenBy { it.name.lowercase() }
@@ -378,10 +392,8 @@ class FileAdapter(
             if (oldPos != -1) notifyItemChanged(oldPos)
         }
 
-        file?.let { newFile ->
-            val newPos = files.indexOfFirst { it.absolutePath == newFile.absolutePath }
-            if (newPos != -1) notifyItemChanged(newPos)
-        }
+        val newPos = files.indexOfFirst { it.absolutePath == file.absolutePath }
+        if (newPos != -1) notifyItemChanged(newPos)
     }
 
     override fun onCreateViewHolder(parent: android.view.ViewGroup, viewType: Int): FileViewHolder {
@@ -393,7 +405,6 @@ class FileAdapter(
     private var lastClickTime: Long = 0
 
     override fun onBindViewHolder(holder: FileViewHolder, position: Int) {
-        holder.isRecyclable = false // Disable recycling for better stability with file operations
         val file = files[position]
         val isSelected = file == selectedFile
 

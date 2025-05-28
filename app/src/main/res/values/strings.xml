@@ -1,5 +1,6 @@
 <resources>
     <!-- App Name -->
+    <!-- Copyright (c) 2024 The Android Open Source Project -->
     <string name="app_name">GenesisAndroidApp</string>
 
     <!-- Main Activity -->
@@ -20,6 +21,7 @@
     <string name="select_file">Select</string>
     <string name="cancel">Cancel</string>
     <string name="file_exported">File exported successfully to: %1$s</string>
+    <string name="file_imported">File imported successfully: %1$s</string>
 
     <!-- Settings -->
     <string name="settings">Settings</string>

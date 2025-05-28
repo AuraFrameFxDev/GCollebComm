@@ -83,13 +83,7 @@ class GenesisAIService : Service() {
 
     private suspend fun generateAIMessage() {
         try {
-            // Get recent context for future AI integration
             getRecentContext()
-            // We'll use this prompt for future AI integration
-            // val prompt = "Generate a natural, friendly message to re-engage the user. Be casual and helpful. " +
-            //            "Here's recent context: $context"
-
-            // Using a simple message for now since we don't have the API set up yet
             val message = when ((1..4).random()) {
                 1 -> "Hey there! Just checking in. Need help with anything?"
                 2 -> "I'm here if you need me. What would you like to work on today?"
@@ -146,7 +140,6 @@ class GenesisAIService : Service() {
                 ).apply {
                     description = "Background service for Genesis AI proactive messaging"
                     setShowBadge(false)
-                    // Set no sound and no vibration for the notification channel
                     setSound(null, null)
                     enableVibration(false)
                 }
@@ -155,7 +148,7 @@ class GenesisAIService : Service() {
                 manager?.createNotificationChannel(serviceChannel)
             } catch (e: Exception) {
                 e.printStackTrace()
-                // Continue without notification channel if there's an error
+
             }
         }
     }

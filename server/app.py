@@ -1,9 +1,8 @@
 import firebase_admin
-from firebase_admin import credentials, firestore, auth, storage
-
+import os
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
-import os
+from firebase_admin import credentials, firestore, auth, storage
 
 SERVICE_ACCOUNT_KEY_PATH = "server/credentials/service-account.json"
 
@@ -29,6 +28,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 def read_root():
     return {
@@ -41,9 +41,11 @@ def read_root():
         }
     }
 
+
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
+
 
 @app.get("/firebase/auth/{token}")
 async def verify_token(token: str):
@@ -55,6 +57,8 @@ async def verify_token(token: str):
     except Exception as e:
         raise HTTPException(status_code=401, detail=str(e))
 
+
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
