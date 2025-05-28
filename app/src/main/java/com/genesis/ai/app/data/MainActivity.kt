@@ -40,23 +40,6 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import com.genesis.ai.app.R
-import com.genesis.ai.app.data.model.GenesisRepositoryNew
-import com.genesis.ai.app.data.model.ImportResponse
-import com.genesis.ai.app.data.model.MessageRequest
-import com.genesis.ai.app.data.model.MessageResponse
-import com.genesis.ai.app.service.GenesisAIService
-import com.google.android.material.switchmaterial.SwitchMaterial
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 private const val MIME_TYPE = "application/octet-stream"
 private val FILE_PICKER_MIME_TYPES = arrayOf("*/*")  // Changed to array of strings
@@ -231,13 +214,6 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Log.e("MainActivity", "Error unregistering receiver: ${e.message}")
             // Ignore exception if receiver wasn't registered
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        try {
-            unregisterReceiver(messageReceiver)
         } catch (e: IllegalArgumentException) {
             // Receiver was not registered
             // This can happen if the activity is stopped before it's fully started
